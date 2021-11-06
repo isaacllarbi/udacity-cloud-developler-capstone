@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "group",
+  "type": "object",
+  "properties": {
+    "foodDetails": {
+      "type": "string",
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "foodDetails",
+    "location",
+    "review"
+  ],
+  "additionalProperties": false
+}
