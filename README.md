@@ -1,10 +1,16 @@
 # Serverless TODO
 
-To implement this project, you need to implement a simple Experience application using AWS Lambda and Serverless framework. Search for all comments starting with the `Experience:` in the code to find the placeholders that you need to implement.
+Foodie is a local food experience tracking web app. It allows users to keep track of what they eat at various restaurants by posting pictures and pictures.
+Each post has  
+1.	What was ordered
+2.	Location
+3.	Review
+4.	Picture of food
 
 # Functionality of the application
 
-This application will allow creating/removing/updating/fetching Experience items. Each TODO item can optionally have an attachment image. Each user only has access to TODO items that he/she has created.
+The application allows creating/removing/updating/fetching of Experience items. 
+An attachment image can be uploaded as well. Each user only has access to TODO items that he/she has created.
 
 # TODO items
 
