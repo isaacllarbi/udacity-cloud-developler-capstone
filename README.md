@@ -69,4 +69,4 @@ npm install
 npm run start
 ```
 
-This should start a development server with the React application that will interact with the serverless TODO application.
+This should open the Foodie web application in the browser
