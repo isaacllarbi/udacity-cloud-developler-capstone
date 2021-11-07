@@ -1,20 +1,17 @@
-import dateFormat from 'dateformat'
 import { History } from 'history'
-import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
   Icon,
-  Input,
   Image,
-  Loader
+  Loader,
+  Form
 } from 'semantic-ui-react'
 
-import { createExperience, deleteExperience, getExperiences, patchExperience } from '../api/experiences-api'
+import { createExperience, deleteExperience, getExperiences } from '../api/experiences-api'
 import Auth from '../auth/Auth'
 import { Experience } from '../types/Experience'
 
@@ -26,6 +23,8 @@ interface ExperiencesProps {
 interface ExperiencesState {
   experiences: Experience[]
   newExperienceFoodDetails: string
+  newExperienceLocation: string
+  newExperienceReview: string
   loadingExperiences: boolean
 }
 
@@ -33,23 +32,33 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
   state: ExperiencesState = {
     experiences: [],
     newExperienceFoodDetails: '',
+    newExperienceLocation: '',
+    newExperienceReview: '',
     loadingExperiences: true
   }
 
-  handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  handleFoodDetailsChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     this.setState({ newExperienceFoodDetails: event.target.value })
+  }
+
+  handleLocationChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({ newExperienceLocation: event.target.value })
+  }
+
+  handleReviewChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({ newExperienceReview: event.target.value })
   }
 
   onEditButtonClick = (experienceId: string) => {
     this.props.history.push(`/experiences/${experienceId}/edit`)
   }
 
-  onExperienceCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onExperienceCreate = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
       const newExperience = await createExperience(this.props.auth.getIdToken(), {
         foodDetails: this.state.newExperienceFoodDetails,
-        location:"",
-        review:""
+        location: this.state.newExperienceLocation,
+        review: this.state.newExperienceReview
       })
       this.setState({
         experiences: [...this.state.experiences, newExperience],
@@ -69,24 +78,6 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
     } catch {
       alert('Experience deletion failed')
     }
-  }
-
-  onTodoCheck = async (pos: number) => {
-    // try {
-    //   const todo = this.state.experiences[pos]
-    //   await patchExperience(this.props.auth.getIdToken(), todo.experienceId, {
-    //     name: todo.foodDetails,
-    //     dueDate: todo.location,
-    //     done: !todo.review
-    //   })
-    //   this.setState({
-    //     experiences: update(this.state.experiences, {
-    //       [pos]: { review: { $set: !todo.review } }
-    //     })
-    //   })
-    // } catch {
-    //   alert('Todo deletion failed')
-    // }
   }
 
   async componentDidMount() {
@@ -115,27 +106,28 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
 
   renderCreateExperienceInput() {
     return (
-      <Grid.Row>
-        <Grid.Column width={16}>
-          <Input
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'New task',
-              onClick: this.onExperienceCreate
-            }}
-            fluid
-            actionPosition="left"
-            placeholder="To change the world..."
-            onChange={this.handleNameChange}
-          />
-        </Grid.Column>
-        <Grid.Column width={16}>
-          <Divider />
-        </Grid.Column>
-      </Grid.Row>
+      <Form>
+     
+        <Form.Field onChange={this.handleFoodDetailsChange}>
+          <label>Food details</label>
+          <input placeholder='What did you eat?' />
+        </Form.Field>
+
+        <Form.Field onChange={this.handleLocationChange}>
+          <label>Location</label>
+          <input placeholder='What is the location of the place?' />
+        </Form.Field>
+
+        <Form.TextArea
+          label='Review'
+          onChange={this.handleReviewChange}
+          placeholder='What was the experience like?' />
+
+        <Button type='submit'
+          onClick={(e) => this.onExperienceCreate(e)} >Submit</Button>
+      </Form>
     )
+
   }
 
   renderExperiences() {
@@ -143,61 +135,65 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderExperiencesList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading EXPERIENCES
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderExperiencesList() {
     return (
       <Grid padded>
-        {this.state.experiences.map((todo, pos) => {
+        {this.state.experiences.map((experience, pos) => {
           return (
-            <Grid.Row key={todo.experienceId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.review}
-                />
+            <Grid.Row key={experience.experienceId}>
+              <Grid.Column width={7} verticalAlign="middle">
+                {experience.foodDetails}
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
-                {todo.foodDetails}
-              </Grid.Column>
+
               <Grid.Column width={3} floated="right">
-                {todo.location}
+                {experience.location}
               </Grid.Column>
+              
+              <Grid.Column width={3} floated="right">
+                {experience.review}
+              </Grid.Column>
+              
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.experienceId)}
+                  onClick={() => this.onEditButtonClick(experience.experienceId)}
                 >
                   <Icon name="pencil" />
                 </Button>
               </Grid.Column>
+              
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onExperienceDelete(todo.experienceId)}
+                  onClick={() => this.onExperienceDelete(experience.experienceId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              
+              {experience.attachmentUrl && (
+                <Image src={experience.attachmentUrl} size="small" wrapped />
               )}
+              
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
+
             </Grid.Row>
           )
         })}
@@ -205,10 +201,4 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
     )
   }
 
-  calculateDueDate(): string {
-    const date = new Date()
-    date.setDate(date.getDate() + 7)
-
-    return dateFormat(date, 'yyyy-mm-dd') as string
-  }
 }

@@ -21,12 +21,15 @@ export async function createExperience(
   idToken: string,
   newExperience: CreateExperienceRequest
 ): Promise<Experience> {
+  console.log('Create Experience',newExperience)
+
   const response = await Axios.post(`${apiEndpoint}/experiences`,  JSON.stringify(newExperience), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
   })
+
   return response.data.item
 }
 
