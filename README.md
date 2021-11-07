@@ -25,6 +25,8 @@ Each Experience item contains the following fields:
 
 ## Prerequisites
 
+* [AWS Account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html)
+* [AWS CLI](https://aws.amazon.com/cli/)
 * <a href="https://manage.auth0.com/" target="_blank">Auth0 account</a>
 * <a href="https://nodejs.org/en/download/package-manager/" target="_blank">NodeJS</a> version up to 12.xx 
 * Serverless 
