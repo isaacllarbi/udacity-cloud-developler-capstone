@@ -8,6 +8,7 @@ import {
   Icon,
   Image,
   Loader,
+  Item,
   Form
 } from 'semantic-ui-react'
 
@@ -95,7 +96,7 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
   render() {
     return (
       <div>
-        <Header as="h1">Experiences</Header>
+        <Header as="h1">Foodie Experiences</Header>
 
         {this.renderCreateExperienceInput()}
 
@@ -107,7 +108,7 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
   renderCreateExperienceInput() {
     return (
       <Form>
-     
+
         <Form.Field onChange={this.handleFoodDetailsChange}>
           <label>Food details</label>
           <input placeholder='What did you eat?' />
@@ -149,23 +150,49 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
   }
 
   renderExperiencesList() {
+
     return (
       <Grid padded>
+        <Grid.Row >
+          <Grid.Column width={2} verticalAlign="middle">
+            <b>Food</b>
+          </Grid.Column>
+
+          <Grid.Column width={2} verticalAlign="middle">
+            <b>Location</b>
+          </Grid.Column>
+
+          <Grid.Column width={9} floated="left">
+            <b>Review</b>
+          </Grid.Column>
+
+          <Grid.Column width={1} floated="right">
+            <b>Action</b>
+          </Grid.Column>
+
+          <Grid.Column width={1} floated="right">
+          </Grid.Column>
+
+          <Grid.Column width={16}>
+            <Divider />
+          </Grid.Column>
+
+        </Grid.Row>
         {this.state.experiences.map((experience, pos) => {
           return (
             <Grid.Row key={experience.experienceId}>
-              <Grid.Column width={7} verticalAlign="middle">
+              <Grid.Column width={2} verticalAlign="middle">
                 {experience.foodDetails}
               </Grid.Column>
 
-              <Grid.Column width={3} floated="right">
+              <Grid.Column width={2} verticalAlign="middle">
                 {experience.location}
               </Grid.Column>
-              
-              <Grid.Column width={3} floated="right">
+
+              <Grid.Column width={9} floated="left">
                 {experience.review}
               </Grid.Column>
-              
+
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
@@ -175,7 +202,7 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
                   <Icon name="pencil" />
                 </Button>
               </Grid.Column>
-              
+
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
@@ -185,11 +212,11 @@ export class Experiences extends React.PureComponent<ExperiencesProps, Experienc
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              
+
               {experience.attachmentUrl && (
-                <Image src={experience.attachmentUrl} size="small" wrapped />
+                <Image src={experience.attachmentUrl} size="medium" wrapped />
               )}
-              
+
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
