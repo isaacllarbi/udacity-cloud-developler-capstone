@@ -14,106 +14,106 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createExperience, deleteExperience, getExperiences, patchExperience } from '../api/experiences-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Experience } from '../types/Experience'
 
-interface TodosProps {
+interface ExperiencesProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface ExperiencesState {
+  experiences: Experience[]
+  newExperienceFoodDetails: string
+  loadingExperiences: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Experiences extends React.PureComponent<ExperiencesProps, ExperiencesState> {
+  state: ExperiencesState = {
+    experiences: [],
+    newExperienceFoodDetails: '',
+    loadingExperiences: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newExperienceFoodDetails: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (experienceId: string) => {
+    this.props.history.push(`/experiences/${experienceId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onExperienceCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
-        dueDate
+      const newExperience = await createExperience(this.props.auth.getIdToken(), {
+        foodDetails: this.state.newExperienceFoodDetails,
+        location:"",
+        review:""
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        experiences: [...this.state.experiences, newExperience],
+        newExperienceFoodDetails: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('Experience creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onExperienceDelete = async (experienceId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteExperience(this.props.auth.getIdToken(), experienceId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId !== todoId)
+        experiences: this.state.experiences.filter(experience => experience.experienceId !== experienceId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Experience deletion failed')
     }
   }
 
   onTodoCheck = async (pos: number) => {
-    try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
-      })
-      this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
-        })
-      })
-    } catch {
-      alert('Todo deletion failed')
-    }
+    // try {
+    //   const todo = this.state.experiences[pos]
+    //   await patchExperience(this.props.auth.getIdToken(), todo.experienceId, {
+    //     name: todo.foodDetails,
+    //     dueDate: todo.location,
+    //     done: !todo.review
+    //   })
+    //   this.setState({
+    //     experiences: update(this.state.experiences, {
+    //       [pos]: { review: { $set: !todo.review } }
+    //     })
+    //   })
+    // } catch {
+    //   alert('Todo deletion failed')
+    // }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const experiences = await getExperiences(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        experiences: experiences,
+        loadingExperiences: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos: ${JSON.stringify(e)}`)
+      alert(`Failed to fetch experiences: ${JSON.stringify(e)}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Experiences</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateExperienceInput()}
 
-        {this.renderTodos()}
+        {this.renderExperiences()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateExperienceInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -123,7 +123,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               labelPosition: 'left',
               icon: 'add',
               content: 'New task',
-              onClick: this.onTodoCreate
+              onClick: this.onExperienceCreate
             }}
             fluid
             actionPosition="left"
@@ -138,8 +138,8 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderExperiences() {
+    if (this.state.loadingExperiences) {
       return this.renderLoading()
     }
 
@@ -159,26 +159,26 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   renderTodosList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.experiences.map((todo, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={todo.experienceId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  checked={todo.review}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {todo.foodDetails}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {todo.location}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(todo.experienceId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -187,7 +187,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onExperienceDelete(todo.experienceId)}
                 >
                   <Icon name="delete" />
                 </Button>
