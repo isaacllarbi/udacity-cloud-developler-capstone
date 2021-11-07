@@ -70,3 +70,15 @@ npm run start
 ```
 
 This should open the Foodie web application in the browser
+
+
+## Screenshots
+**Screenshot showing Client deployment**
+![Image of Client Deployment](https://raw.githubusercontent.com/isaacllarbi/udacity-cloud-developler-capstone/main/screenshots/app%20screenshot.png)
+The client React App has been deployed on the local machine)
+
+**Screenshot showing the result of a Serverless deployment (sls deploy -v)**
+![Image of Serverless Deployment](https://raw.githubusercontent.com/isaacllarbi/udacity-cloud-developler-capstone/main/screenshots/sls%20deploy.png)
+
+**Screenshot of the CloudFormation Stack for Serverless deployment**
+![Image of CloudFormation Summary](https://raw.githubusercontent.com/isaacllarbi/udacity-cloud-developler-capstone/main/screenshots/cloud%20formation.png)
